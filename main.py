@@ -8,7 +8,7 @@ from streamlit_extras.stylable_container import stylable_container
 from datetime import datetime
 
 # Set up the page configuration
-st.set_page_config(page_title="ChatBotCare", layout="centered")
+st.set_page_config(page_title="BotGPT", layout="centered")
 
 pipeline = Pipeline()
 
@@ -22,13 +22,6 @@ def login():
             margin: auto;
             text-align: center;
         }
-        .login-image {
-            text-align: center;
-        }
-        .login-image img {
-            width: 100%; 
-            height: auto; 
-        }
         .stButton button {
             width: 40%; 
         }
@@ -40,8 +33,8 @@ def login():
     with st.container():
         st.markdown('<div class="login-form">', unsafe_allow_html=True)
         
-        with st.markdown('<div class="login-image">', unsafe_allow_html=True):
-            st.image("image.png", width=300)  
+        # with st.markdown('<div class="login-image">', unsafe_allow_html=True):
+        #     st.image("image.png", width=300)  
        
         # st.title("Login",layout="centered")
         
