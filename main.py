@@ -14,9 +14,6 @@ pipeline = Pipeline()
 
 def login():
     """Renders the login page and handles authentication."""
-    # Insert your logo here
-    st.image("login.jpg",width=200)
-    
     st.markdown(
         """
         <style>
@@ -24,6 +21,13 @@ def login():
             max-width: 300px;
             margin: auto;
             text-align: center;
+        }
+        .login-image {
+            text-align: center;
+        }
+        .login-image img {
+            width: 150px; /* Điều chỉnh kích thước ảnh tùy theo mong muốn */
+            height: auto; /* Đảm bảo tỷ lệ hình ảnh không bị méo */
         }
         .stButton button {
             width: 100%;
@@ -35,6 +39,10 @@ def login():
 
     with st.container():
         st.markdown('<div class="login-form">', unsafe_allow_html=True)
+        
+        with st.markdown('<div class="login-image">', unsafe_allow_html=True):
+            st.image("login.jpg", width=200)  # Điều chỉnh kích thước ảnh tùy theo mong muốn
+        
         # st.title("Login",layout="centered")
         
         username = st.text_input("Username", key="login_username")
