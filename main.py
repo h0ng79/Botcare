@@ -18,7 +18,7 @@ def login():
         """
         <style>
         .login-form {
-            max-width: 150px; /* Giảm chiều rộng của thanh nhập */
+            max-width: 120px; /* Giảm chiều rộng của thanh nhập */
             margin: auto;
             text-align: center;
         }
