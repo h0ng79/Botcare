@@ -41,7 +41,7 @@ def login():
         st.markdown('<div class="login-form">', unsafe_allow_html=True)
         
         with st.markdown('<div class="login-image">', unsafe_allow_html=True):
-            st.image("image.png", width=300)  # Điều chỉnh kích thước ảnh tùy theo mong muốn
+            st.image("image.png", width=300, height=300)  # Điều chỉnh kích thước ảnh tùy theo mong muốn
         
         # st.title("Login",layout="centered")
         
