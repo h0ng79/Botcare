@@ -197,22 +197,22 @@ def main():
         # Response display section
         if selected_model == "Gemini-Pro" and st.session_state.get('responses_gemini'):
             for i, ((timestamp_q, query), (timestamp_r, response)) in enumerate(zip(st.session_state['requests_gemini'], st.session_state['responses_gemini'])):
-                message(f"{timestamp_q}\n{query}", is_user=True, key=f"gemini_{i}_user")
-                message(f"{timestamp_r}\n{response}", key=f"gemini_{i}")
                 copy_button = st.button(f"📋", key=f"copy_response_gemini_{i}")
                 if reference_ips: st.write(f"Reading context from these movies: {reference_ips}")
                 if copy_button:
                     pyperclip.copy(response)
                     st.success("Response copied to clipboard!")
+                message(f"{timestamp_q}\n{query}", is_user=True, key=f"gemini_{i}_user")
+                message(f"{timestamp_r}\n{response}", key=f"gemini_{i}")
         elif selected_model == "ChatGPT 4o" and st.session_state.get('responses_chatgpt'):
             for i, ((timestamp_q, query), (timestamp_r, response)) in enumerate(zip(st.session_state['requests_chatgpt'], st.session_state['responses_chatgpt'])):
-                message(f"{timestamp_q}\n{query}", is_user=True, key=f"chatgpt_{i}_user")
-                message(f"{timestamp_r}\n{response}", key=f"chatgpt_{i}")
                 copy_button = st.button(f"📋", key=f"copy_response_chatgpt_{i}")
                 if reference_ips: st.write(f"Reading context from these movies: {reference_ips}")
                 if copy_button:
                     pyperclip.copy(response)
                     st.success("Response copied to clipboard!")
+                message(f"{timestamp_q}\n{query}", is_user=True, key=f"chatgpt_{i}_user")
+                message(f"{timestamp_r}\n{response}", key=f"chatgpt_{i}")
 
 if __name__ == "__main__":
     main()
