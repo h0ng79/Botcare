@@ -9,7 +9,27 @@ from datetime import datetime
 # Set up the page configuration
 st.set_page_config(page_title="ChatBotCare", layout="wide")
 pipeline = Pipeline()
+def login():
+    """Renders the login page and handles authentication."""
+    st.title("Login")
+    # st.set_page_config(page_title="Login ChatBotCare", layout="wide")
+    username = st.text_input("Username", key="login_username")
+    password = st.text_input("Password", type="password", key="login_password")
+    if st.button("Login"):
+        # Ensure st.secrets.CREDENTIALS is in the correct format {username: password}
+        credentials = st.secrets.get("CREDENTIALS", {})
+        if credentials.get(username) == password:
+            st.session_state.authenticated = True
+            st.session_state.username = username
+            st.success("Login successful!")
+        else:
+            st.error("Invalid username or password")
 
+def logout():
+    """Handles the logout process."""
+    st.session_state.authenticated = False
+    st.session_state.username = None
+    st.success("Logged out successfully!")
 # Function to load chat history from a file
 def load_chat_history(file_path):
     chat_history = []
@@ -44,61 +64,70 @@ def delete_chat_history(file_path):
         st.success(f"Deleted {file_path}")
 
 def main():
-    with st.sidebar:
-        st.write("### Select Model")
-        selected_model = st.session_state.get("selected_model", "ChatGPT 4o")
+    if "authenticated" not in st.session_state:
+        st.session_state.authenticated = False
 
-        model_options = st.radio("Model", ["ChatGPT 4o", "Gemini-Pro"], key="model_select")
-        if model_options == "Gemini-Pro":
-            selected_model = "Gemini-Pro"
-        else:
-            selected_model = "ChatGPT 4o"
-
-        st.write("### Retrieve Database")
-        selected_is_rag = st.session_state.get("selected_is_rag", True)
-
-        is_rag_options = st.radio("RAG", ["Yes", "No"], key="is_rag")
-        if is_rag_options == "Yes":
-            selected_is_rag = True
-        else:
-            selected_is_rag = False
-
-        st.write("###")
-        if st.button("New Chat"):
-            if selected_model == "Gemini-Pro":
-                st.session_state['requests_gemini'] = []
-                st.session_state['responses_gemini'] = []
-                st.session_state['chat_history_gemini'] = []
+    if not st.session_state.authenticated:
+        login()
+    else:
+        with st.sidebar:
+            st.write(f"Welcome, {st.session_state.username}!")
+            if st.button("Logout"):
+                logout()
+            st.write("### Select Model")
+            selected_model = st.session_state.get("selected_model", "ChatGPT 4o")
+    
+            model_options = st.radio("Model", ["ChatGPT 4o", "Gemini-Pro"], key="model_select")
+            if model_options == "Gemini-Pro":
+                selected_model = "Gemini-Pro"
             else:
-                st.session_state['requests_chatgpt'] = []
-                st.session_state['responses_chatgpt'] = []
-                st.session_state['chat_history_chatgpt'] = []
-            # Reset loaded chat history
-            st.session_state['loaded_chat_history'] = []
-
-        # New input field for the chat history file name with default value ".txt"
-        chat_history_filename = st.text_input("Chat History Filename", value=".txt", placeholder="Enter chat history filename")
-        if chat_history_filename:
-            st.session_state["chat_history_filename"] = chat_history_filename
-
-        # Display existing chat history files
-        st.write("### Chat History Files")
-        folder_name = st.session_state.get("folder_name", "History")
-        if not os.path.exists(folder_name):
-            os.makedirs(folder_name)
-        chat_files = [f for f in os.listdir(folder_name) if f.endswith('.txt')]
-        selected_file = st.selectbox("Select a chat history file to load", chat_files)
-        
-        if selected_file:
-            file_path = os.path.join(folder_name, selected_file)
-            if st.button("Load Chat History"):
-                chat_history = load_chat_history(file_path)
-                st.session_state["loaded_chat_history"] = chat_history
-            if st.button("Delete Chat History"):
-                delete_chat_history(file_path)
-                # Update chat files list after deletion
-                chat_files = [f for f in os.listdir(folder_name) if f.endswith('.txt')]
-                st.experimental_rerun()
+                selected_model = "ChatGPT 4o"
+    
+            st.write("### Retrieve Database")
+            selected_is_rag = st.session_state.get("selected_is_rag", True)
+    
+            is_rag_options = st.radio("RAG", ["Yes", "No"], key="is_rag")
+            if is_rag_options == "Yes":
+                selected_is_rag = True
+            else:
+                selected_is_rag = False
+    
+            st.write("###")
+            if st.button("New Chat"):
+                if selected_model == "Gemini-Pro":
+                    st.session_state['requests_gemini'] = []
+                    st.session_state['responses_gemini'] = []
+                    st.session_state['chat_history_gemini'] = []
+                else:
+                    st.session_state['requests_chatgpt'] = []
+                    st.session_state['responses_chatgpt'] = []
+                    st.session_state['chat_history_chatgpt'] = []
+                # Reset loaded chat history
+                st.session_state['loaded_chat_history'] = []
+    
+            # New input field for the chat history file name with default value ".txt"
+            chat_history_filename = st.text_input("Chat History Filename", value=".txt", placeholder="Enter chat history filename")
+            if chat_history_filename:
+                st.session_state["chat_history_filename"] = chat_history_filename
+    
+            # Display existing chat history files
+            st.write("### Chat History Files")
+            folder_name = st.session_state.get("folder_name", "History")
+            if not os.path.exists(folder_name):
+                os.makedirs(folder_name)
+            chat_files = [f for f in os.listdir(folder_name) if f.endswith('.txt')]
+            selected_file = st.selectbox("Select a chat history file to load", chat_files)
+            
+            if selected_file:
+                file_path = os.path.join(folder_name, selected_file)
+                if st.button("Load Chat History"):
+                    chat_history = load_chat_history(file_path)
+                    st.session_state["loaded_chat_history"] = chat_history
+                if st.button("Delete Chat History"):
+                    delete_chat_history(file_path)
+                    # Update chat files list after deletion
+                    chat_files = [f for f in os.listdir(folder_name) if f.endswith('.txt')]
+                    st.experimental_rerun()
 
     # Display loaded chat history
     if "loaded_chat_history" in st.session_state and st.session_state["loaded_chat_history"]:
