@@ -21,12 +21,12 @@ def login():
         """
         <style>
         .login-form {
-            max-width: 300px;
+            max-width: 50px;
             margin: auto;
             text-align: center;
         }
         .stButton button {
-            width: 80%;
+            width: 50%;
         }
         </style>
         """,
