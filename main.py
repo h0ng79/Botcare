@@ -8,39 +8,39 @@ from streamlit_extras.stylable_container import stylable_container
 from datetime import datetime
 
 # Set up the page configuration
-st.set_page_config(page_title="ChatBotCare", layout="wide")
+st.set_page_config(page_title="ChatBotCare", layout="centered")
 
 pipeline = Pipeline()
 
 def login():
     """Renders the login page and handles authentication."""
-    # st.image("logo.png", use_column_width=True)  # Insert your logo here
-    st.title("Login")
+    # Insert your logo here
+    # st.image("logo.png", use_column_width=True)
+    
+    st.markdown(
+        """
+        <style>
+        .login-form {
+            max-width: 300px;
+            margin: auto;
+            text-align: center;
+        }
+        .stButton button {
+            width: 100%;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
 
-    # Create a centered container for the login form
-    with st.form(key='login_form', clear_on_submit=True):
-        st.markdown(
-            """
-            <style>
-            .centered {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                flex-direction: column;
-            }
-            </style>
-            <div class="centered">
-            """,
-            unsafe_allow_html=True
-        )
-
+    with st.container():
+        st.markdown('<div class="login-form">', unsafe_allow_html=True)
+        st.title("Login")
+        
         username = st.text_input("Username", key="login_username")
         password = st.text_input("Password", type="password", key="login_password")
-        login_button = st.form_submit_button(label="Login")
-
-        st.markdown("</div>", unsafe_allow_html=True)
-
-        if login_button:
+        
+        if st.button("Login"):
             credentials = st.secrets.get("CREDENTIALS", {})
             if credentials.get(username) == password:
                 st.session_state.authenticated = True
@@ -48,6 +48,8 @@ def login():
                 # st.success("Login successful!")
             else:
                 st.error("Invalid username or password")
+
+        st.markdown('</div>', unsafe_allow_html=True)
 
 def logout():
     """Handles the logout process."""
