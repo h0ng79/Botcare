@@ -63,7 +63,7 @@ def logout():
     """Handles the logout process."""
     st.session_state.authenticated = False
     st.session_state.username = None
-    st.success("Logged out successfully!")
+    st.experimental_rerun()
 
 # Function to load chat history from a file
 def load_chat_history(file_path):
