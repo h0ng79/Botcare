@@ -26,7 +26,7 @@ def login():
             text-align: center;
         }
         .stButton button {
-            width: 100%;
+            width: 80%;
         }
         </style>
         """,
@@ -35,7 +35,7 @@ def login():
 
     with st.container():
         st.markdown('<div class="login-form">', unsafe_allow_html=True)
-        st.title("Login",layout="centered")
+        # st.title("Login",layout="centered")
         
         username = st.text_input("Username", key="login_username")
         password = st.text_input("Password", type="password", key="login_password")
