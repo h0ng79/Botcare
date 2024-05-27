@@ -26,7 +26,7 @@ def login():
             text-align: center;
         }
         .login-image img {
-            width: 150px; /* Điều chỉnh kích thước ảnh tùy theo mong muốn */
+            width: 100%; /* Điều chỉnh kích thước ảnh để bằng với chiều rộng của các thanh nhập */
             height: auto; /* Đảm bảo tỷ lệ hình ảnh không bị méo */
         }
         .stButton button {
@@ -41,8 +41,8 @@ def login():
         st.markdown('<div class="login-form">', unsafe_allow_html=True)
         
         with st.markdown('<div class="login-image">', unsafe_allow_html=True):
-            st.image("image.png",, width=200)  # Điều chỉnh kích thước ảnh tùy theo mong muốn
-        
+            st.image("image.png", width=300)  # Điều chỉnh kích thước ảnh để bằng với chiều rộng của thanh nhập
+       
         # st.title("Login",layout="centered")
         
         username = st.text_input("Username", key="login_username")
