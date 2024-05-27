@@ -33,7 +33,13 @@ from langchain._api import LangChainDeprecationWarning
 warnings.simplefilter("ignore", category=LangChainDeprecationWarning)
 
 # Load environment variables from .env file
-load_dotenv()
+st.write(
+    "Has environment variables been set:",
+    os.environ["OPENAI_API_KEY"] == st.secrets["OPENAI_API_KEY"],
+    os.environ["GOOGLE_API_KEY"] == st.secrets["GOOGLE_API_KEY"],
+    os.environ["PINECONE_API_KEY"] == st.secrets["PINECONE_API_KEY"]
+)
+
 
 class Pipeline:
     
