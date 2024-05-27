@@ -129,61 +129,61 @@ def main():
                     chat_files = [f for f in os.listdir(folder_name) if f.endswith('.txt')]
                     st.experimental_rerun()
 
-    # Display loaded chat history
-    if "loaded_chat_history" in st.session_state and st.session_state["loaded_chat_history"]:
-        st.write("### Loaded Chat History")
-        for i, (role, timestamp, content) in enumerate(st.session_state["loaded_chat_history"]):
-            is_user = role == "user"
-            formatted_message = f"{timestamp}\n{content}"
-            message(formatted_message, is_user=is_user, key=f"loaded_{role}_{i}")
-
-
-        # Store the selected model in session state
-        st.session_state["selected_model"] = selected_model
-   # Text input section
-    reference_ips = ""
-    if query := st.chat_input("Type your question here..."):
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        reference_ips = pipeline.log_reference_ips(query, selected_is_rag)
-        with st.spinner("typing..."):
-            if selected_model == "Gemini-Pro":
-                response = pipeline.user_input(query, selected_is_rag)
-                response_text = response['output_text'] if isinstance(response, dict) and 'output_text' in response else str(response)
-                st.session_state.setdefault('requests_gemini', []).append((timestamp, query))
-                st.session_state.setdefault('responses_gemini', []).append((timestamp, response_text))
-                st.session_state.setdefault('chat_history_gemini', []).append((timestamp, query, response_text))
-                folder_name = st.session_state.get("folder_name", "History")
-                chat_history_filename = st.session_state.get("chat_history_filename", "chat_history_gemini.txt")
-                pipeline.save_chat_history(st.session_state['chat_history_gemini'], folder_name, chat_history_filename)
-            else:
-                context = pipeline.find_match(query, selected_is_rag)
-                response_text = pipeline.conversation.predict(input=f"Context:\n {context} \n\n Query:\n{query}")
-                st.session_state.setdefault('requests_chatgpt', []).append((timestamp, query))
-                st.session_state.setdefault('responses_chatgpt', []).append((timestamp, response_text))
-                st.session_state.setdefault('chat_history_chatgpt', []).append((timestamp, query, response_text))
-                folder_name = st.session_state.get("folder_name", "History")
-                chat_history_filename = st.session_state.get("chat_history_filename", "chat_history_chatgpt.txt")
-                pipeline.save_chat_history(st.session_state['chat_history_chatgpt'], folder_name, chat_history_filename)
-
-    # Response display section
-    if selected_model == "Gemini-Pro" and st.session_state.get('responses_gemini'):
-        for i, ((timestamp_q, query), (timestamp_r, response)) in enumerate(zip(st.session_state['requests_gemini'], st.session_state['responses_gemini'])):
-            message(f"{timestamp_q}\n{query}", is_user=True, key=f"gemini_{i}_user")
-            message(f"{timestamp_r}\n{response}", key=f"gemini_{i}")
-            copy_button = st.button(f"📋", key=f"copy_response_gemini_{i}")
-            if reference_ips: st.write(f"Reading context from these movies: {reference_ips}")
-            if copy_button:
-                pyperclip.copy(response)
-                st.success("Response copied to clipboard!")
-    elif selected_model == "ChatGPT 4o" and st.session_state.get('responses_chatgpt'):
-        for i, ((timestamp_q, query), (timestamp_r, response)) in enumerate(zip(st.session_state['requests_chatgpt'], st.session_state['responses_chatgpt'])):
-            message(f"{timestamp_q}\n{query}", is_user=True, key=f"chatgpt_{i}_user")
-            message(f"{timestamp_r}\n{response}", key=f"chatgpt_{i}")
-            copy_button = st.button(f"📋", key=f"copy_response_chatgpt_{i}")
-            if reference_ips: st.write(f"Reading context from these movies: {reference_ips}")
-            if copy_button:
-                pyperclip.copy(response)
-                st.success("Response copied to clipboard!")
+        # Display loaded chat history
+        if "loaded_chat_history" in st.session_state and st.session_state["loaded_chat_history"]:
+            st.write("### Loaded Chat History")
+            for i, (role, timestamp, content) in enumerate(st.session_state["loaded_chat_history"]):
+                is_user = role == "user"
+                formatted_message = f"{timestamp}\n{content}"
+                message(formatted_message, is_user=is_user, key=f"loaded_{role}_{i}")
+    
+    
+            # Store the selected model in session state
+            st.session_state["selected_model"] = selected_model
+       # Text input section
+        reference_ips = ""
+        if query := st.chat_input("Type your question here..."):
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            reference_ips = pipeline.log_reference_ips(query, selected_is_rag)
+            with st.spinner("typing..."):
+                if selected_model == "Gemini-Pro":
+                    response = pipeline.user_input(query, selected_is_rag)
+                    response_text = response['output_text'] if isinstance(response, dict) and 'output_text' in response else str(response)
+                    st.session_state.setdefault('requests_gemini', []).append((timestamp, query))
+                    st.session_state.setdefault('responses_gemini', []).append((timestamp, response_text))
+                    st.session_state.setdefault('chat_history_gemini', []).append((timestamp, query, response_text))
+                    folder_name = st.session_state.get("folder_name", "History")
+                    chat_history_filename = st.session_state.get("chat_history_filename", "chat_history_gemini.txt")
+                    pipeline.save_chat_history(st.session_state['chat_history_gemini'], folder_name, chat_history_filename)
+                else:
+                    context = pipeline.find_match(query, selected_is_rag)
+                    response_text = pipeline.conversation.predict(input=f"Context:\n {context} \n\n Query:\n{query}")
+                    st.session_state.setdefault('requests_chatgpt', []).append((timestamp, query))
+                    st.session_state.setdefault('responses_chatgpt', []).append((timestamp, response_text))
+                    st.session_state.setdefault('chat_history_chatgpt', []).append((timestamp, query, response_text))
+                    folder_name = st.session_state.get("folder_name", "History")
+                    chat_history_filename = st.session_state.get("chat_history_filename", "chat_history_chatgpt.txt")
+                    pipeline.save_chat_history(st.session_state['chat_history_chatgpt'], folder_name, chat_history_filename)
+    
+        # Response display section
+        if selected_model == "Gemini-Pro" and st.session_state.get('responses_gemini'):
+            for i, ((timestamp_q, query), (timestamp_r, response)) in enumerate(zip(st.session_state['requests_gemini'], st.session_state['responses_gemini'])):
+                message(f"{timestamp_q}\n{query}", is_user=True, key=f"gemini_{i}_user")
+                message(f"{timestamp_r}\n{response}", key=f"gemini_{i}")
+                copy_button = st.button(f"📋", key=f"copy_response_gemini_{i}")
+                if reference_ips: st.write(f"Reading context from these movies: {reference_ips}")
+                if copy_button:
+                    pyperclip.copy(response)
+                    st.success("Response copied to clipboard!")
+        elif selected_model == "ChatGPT 4o" and st.session_state.get('responses_chatgpt'):
+            for i, ((timestamp_q, query), (timestamp_r, response)) in enumerate(zip(st.session_state['requests_chatgpt'], st.session_state['responses_chatgpt'])):
+                message(f"{timestamp_q}\n{query}", is_user=True, key=f"chatgpt_{i}_user")
+                message(f"{timestamp_r}\n{response}", key=f"chatgpt_{i}")
+                copy_button = st.button(f"📋", key=f"copy_response_chatgpt_{i}")
+                if reference_ips: st.write(f"Reading context from these movies: {reference_ips}")
+                if copy_button:
+                    pyperclip.copy(response)
+                    st.success("Response copied to clipboard!")
 
 if __name__ == "__main__":
     main()
