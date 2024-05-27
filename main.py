@@ -21,7 +21,7 @@ def login():
         if credentials.get(username) == password:
             st.session_state.authenticated = True
             st.session_state.username = username
-            st.success("Login successful!")
+            # st.success("Login successful!")
         else:
             st.error("Invalid username or password")
 
