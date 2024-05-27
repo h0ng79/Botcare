@@ -30,7 +30,7 @@ def login():
             height: auto; /* Đảm bảo tỷ lệ hình ảnh không bị méo */
         }
         .stButton button {
-            width: 100%;
+            width: 50%;
         }
         </style>
         """,
