@@ -167,8 +167,8 @@ def main():
                 message(formatted_message, is_user=is_user, key=f"loaded_{role}_{i}")
     
     
-            # Store the selected model in session state
-            st.session_state["selected_model"] = selected_model
+        # Store the selected model in session state
+        st.session_state["selected_model"] = selected_model
        # Text input section
         reference_ips = ""
         if query := st.chat_input("Type your question here..."):
