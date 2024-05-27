@@ -21,7 +21,7 @@ def login():
         """
         <style>
         .login-form {
-            max-width: 300px;
+            max-width: 100px;
             margin: auto;
             text-align: center;
         }
