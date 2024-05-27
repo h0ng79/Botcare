@@ -15,7 +15,7 @@ pipeline = Pipeline()
 def login():
     """Renders the login page and handles authentication."""
     # Insert your logo here
-    st.image("login.PNG", width=50, height=20)
+    st.image("login.PNG",use_column_width=True)
     
     st.markdown(
         """
