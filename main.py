@@ -18,7 +18,7 @@ def login():
         """
         <style>
         .login-form {
-            max-width: 120px; /* Giảm chiều rộng của thanh nhập */
+            max-width: 120px;
             margin: auto;
             text-align: center;
         }
@@ -26,11 +26,11 @@ def login():
             text-align: center;
         }
         .login-image img {
-            width: 100%; /* Điều chỉnh kích thước ảnh để bằng với chiều rộng của thanh nhập */
-            height: auto; /* Đảm bảo tỷ lệ hình ảnh không bị méo */
+            width: 100%; 
+            height: auto; 
         }
         .stButton button {
-            width: 40%; /* Giảm chiều rộng của nút login */
+            width: 40%; 
         }
         </style>
         """,
@@ -41,7 +41,7 @@ def login():
         st.markdown('<div class="login-form">', unsafe_allow_html=True)
         
         with st.markdown('<div class="login-image">', unsafe_allow_html=True):
-            st.image("image.png", width=150)  # Điều chỉnh kích thước ảnh để bằng với chiều rộng của thanh nhập
+            st.image("image.png", width=150)  
        
         # st.title("Login",layout="centered")
         
