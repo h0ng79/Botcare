@@ -15,18 +15,18 @@ pipeline = Pipeline()
 def login():
     """Renders the login page and handles authentication."""
     # Insert your logo here
-    # st.image("logo.png", use_column_width=True)
+    st.image("login.PNG", use_column_width=True)
     
     st.markdown(
         """
         <style>
         .login-form {
-            max-width: 50px;
+            max-width: 300px;
             margin: auto;
             text-align: center;
         }
         .stButton button {
-            width: 50%;
+            width: 100%;
         }
         </style>
         """,
