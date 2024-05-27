@@ -6,30 +6,55 @@ import pyperclip
 from utils import Pipeline
 from streamlit_extras.stylable_container import stylable_container
 from datetime import datetime
+
 # Set up the page configuration
 st.set_page_config(page_title="ChatBotCare", layout="wide")
+
 pipeline = Pipeline()
+
 def login():
     """Renders the login page and handles authentication."""
+    st.image("logo.png", use_column_width=True)  # Insert your logo here
     st.title("Login")
-    # st.set_page_config(page_title="Login ChatBotCare", layout="wide")
-    username = st.text_input("Username", key="login_username")
-    password = st.text_input("Password", type="password", key="login_password")
-    if st.button("Login"):
-        # Ensure st.secrets.CREDENTIALS is in the correct format {username: password}
-        credentials = st.secrets.get("CREDENTIALS", {})
-        if credentials.get(username) == password:
-            st.session_state.authenticated = True
-            st.session_state.username = username
-            # st.success("Login successful!")
-        else:
-            st.error("Invalid username or password")
+
+    # Create a centered container for the login form
+    with st.form(key='login_form', clear_on_submit=True):
+        st.markdown(
+            """
+            <style>
+            .centered {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+            }
+            </style>
+            <div class="centered">
+            """,
+            unsafe_allow_html=True
+        )
+
+        username = st.text_input("Username", key="login_username")
+        password = st.text_input("Password", type="password", key="login_password")
+        login_button = st.form_submit_button(label="Login")
+
+        st.markdown("</div>", unsafe_allow_html=True)
+
+        if login_button:
+            credentials = st.secrets.get("CREDENTIALS", {})
+            if credentials.get(username) == password:
+                st.session_state.authenticated = True
+                st.session_state.username = username
+                # st.success("Login successful!")
+            else:
+                st.error("Invalid username or password")
 
 def logout():
     """Handles the logout process."""
     st.session_state.authenticated = False
     st.session_state.username = None
     st.success("Logged out successfully!")
+
 # Function to load chat history from a file
 def load_chat_history(file_path):
     chat_history = []
@@ -57,6 +82,7 @@ def load_chat_history(file_path):
         chat_history.append((current_role, current_timestamp, "\n".join(current_content)))
 
     return chat_history
+
 # Function to delete chat history file
 def delete_chat_history(file_path):
     if os.path.exists(file_path):
