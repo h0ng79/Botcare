@@ -21,7 +21,7 @@ def login():
         """
         <style>
         .login-form {
-            max-width: 100px;
+            max-width: 300px;
             margin: auto;
             text-align: center;
         }
@@ -35,7 +35,7 @@ def login():
 
     with st.container():
         st.markdown('<div class="login-form">', unsafe_allow_html=True)
-        st.title("Login")
+        st.title("Login",layout="centered")
         
         username = st.text_input("Username", key="login_username")
         password = st.text_input("Password", type="password", key="login_password")
@@ -45,7 +45,7 @@ def login():
             if credentials.get(username) == password:
                 st.session_state.authenticated = True
                 st.session_state.username = username
-                # st.success("Login successful!")
+                st.experimental_rerun()  # Force rerun after successful login
             else:
                 st.error("Invalid username or password")
 
