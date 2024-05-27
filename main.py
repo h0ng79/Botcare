@@ -18,7 +18,7 @@ def login():
         """
         <style>
         .login-form {
-            max-width: 300px;
+            max-width: 200px;
             margin: auto;
             text-align: center;
         }
@@ -30,7 +30,7 @@ def login():
             height: auto; /* Đảm bảo tỷ lệ hình ảnh không bị méo */
         }
         .stButton button {
-            width: 50%;
+            width: 40%;
         }
         </style>
         """,
