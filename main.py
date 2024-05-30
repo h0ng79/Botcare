@@ -195,75 +195,28 @@ def main():
                     chat_history_filename = st.session_state.get("chat_history_filename", "chat_history_chatgpt.txt")
                     pipeline.save_chat_history(st.session_state['chat_history_chatgpt'], folder_name, chat_history_filename)
     
-#          # Response display section
-#         if selected_model == "Gemini-Pro" and st.session_state.get('responses_gemini'):
-#             for i, ((timestamp_q, query), (timestamp_r, response)) in enumerate(zip(st.session_state['requests_gemini'], st.session_state['responses_gemini'])):
-#                 message(f"{timestamp_q}\n{query}", is_user=True, key=f"gemini_{i}_user")
-#                 copy_button = st.button(f"📋", key=f"copy_response_gemini_{i}")
-#                 if reference_ips: st.write(f"Reading context from these movies: {reference_ips}")
-#                 if copy_button:
-#                     # pyperclip.copy(response)
-#                     clipboard.copy(response)
-#                     st.success("Response copied to clipboard!")
-#                 message(f"{timestamp_r}\n{response}", key=f"gemini_{i}")
-#         elif selected_model == "ChatGPT 4o" and st.session_state.get('responses_chatgpt'):
-#             for i, ((timestamp_q, query), (timestamp_r, response)) in enumerate(zip(st.session_state['requests_chatgpt'], st.session_state['responses_chatgpt'])):
-#                 message(f"{timestamp_q}\n{query}", is_user=True, key=f"chatgpt_{i}_user")
-#                 copy_button = st.button(f"📋", key=f"copy_response_chatgpt_{i}")
-#                 if reference_ips: st.write(f"Reading context from these movies: {reference_ips}")
-#                 if copy_button:
-#                     # pyperclip.copy(response)
-#                     clipboard.copy(response)
-#                     st.success("Response copied to clipboard!")
-#                 message(f"{timestamp_r}\n{response}", key=f"chatgpt_{i}")
-
-# if __name__ == "__main__":
-#     main()
-       # Response display section
+         # Response display section
         if selected_model == "Gemini-Pro" and st.session_state.get('responses_gemini'):
             for i, ((timestamp_q, query), (timestamp_r, response)) in enumerate(zip(st.session_state['requests_gemini'], st.session_state['responses_gemini'])):
                 message(f"{timestamp_q}\n{query}", is_user=True, key=f"gemini_{i}_user")
                 copy_button = st.button(f"📋", key=f"copy_response_gemini_{i}")
                 if reference_ips: st.write(f"Reading context from these movies: {reference_ips}")
                 if copy_button:
-                    # JavaScript to copy to clipboard
-                    st.markdown(f"""
-                    <script>
-                    function copyToClipboard(text) {{
-                        const el = document.createElement('textarea');
-                        el.value = text;
-                        document.body.appendChild(el);
-                        el.select();
-                        document.execCommand('copy');
-                        document.body.removeChild(el);
-                    }}
-                    copyToClipboard({repr(response)});
-                    </script>
-                    """, unsafe_allow_html=True)
+                    # pyperclip.copy(response)
+                    clipboard.copy(response)
                     st.success("Response copied to clipboard!")
-                message(f"{timestamp_r}\n{response}", is_user=False, key=f"gemini_{i}_bot")
+                message(f"{timestamp_r}\n{response}", key=f"gemini_{i}")
         elif selected_model == "ChatGPT 4o" and st.session_state.get('responses_chatgpt'):
             for i, ((timestamp_q, query), (timestamp_r, response)) in enumerate(zip(st.session_state['requests_chatgpt'], st.session_state['responses_chatgpt'])):
                 message(f"{timestamp_q}\n{query}", is_user=True, key=f"chatgpt_{i}_user")
                 copy_button = st.button(f"📋", key=f"copy_response_chatgpt_{i}")
                 if reference_ips: st.write(f"Reading context from these movies: {reference_ips}")
                 if copy_button:
-                    # JavaScript to copy to clipboard
-                    st.markdown(f"""
-                    <script>
-                    function copyToClipboard(text) {{
-                        const el = document.createElement('textarea');
-                        el.value = text;
-                        document.body.appendChild(el);
-                        el.select();
-                        document.execCommand('copy');
-                        document.body.removeChild(el);
-                    }}
-                    copyToClipboard({repr(response)});
-                    </script>
-                    """, unsafe_allow_html=True)
+                    # pyperclip.copy(response)
+                    clipboard.copy(response)
                     st.success("Response copied to clipboard!")
-                message(f"{timestamp_r}\n{response}", is_user=False, key=f"chatgpt_{i}_bot")
+                message(f"{timestamp_r}\n{response}", key=f"chatgpt_{i}")
 
 if __name__ == "__main__":
     main()
+
