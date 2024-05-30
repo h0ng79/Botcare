@@ -2,6 +2,8 @@ import os
 import streamlit as st
 from utils import *
 from streamlit_chat import message
+import pyperclip
+import clipboard
 from utils import Pipeline
 from streamlit_extras.stylable_container import stylable_container
 from datetime import datetime
@@ -31,6 +33,11 @@ def login():
 
     with st.container():
         st.markdown('<div class="login-form">', unsafe_allow_html=True)
+        
+        # with st.markdown('<div class="login-image">', unsafe_allow_html=True):
+        #     st.image("image.png", width=300)  
+       
+        # st.title("Login",layout="centered")
         
         username = st.text_input("Username", key="login_username")
         password = st.text_input("Password", type="password", key="login_password")
@@ -160,6 +167,7 @@ def main():
                 formatted_message = f"{timestamp}\n{content}"
                 message(formatted_message, is_user=is_user, key=f"loaded_{role}_{i}")
     
+    
         # Store the selected model in session state
         st.session_state["selected_model"] = selected_model
        # Text input section
@@ -186,8 +194,32 @@ def main():
                     folder_name = st.session_state.get("folder_name", "History")
                     chat_history_filename = st.session_state.get("chat_history_filename", "chat_history_chatgpt.txt")
                     pipeline.save_chat_history(st.session_state['chat_history_chatgpt'], folder_name, chat_history_filename)
+    
+#          # Response display section
+#         if selected_model == "Gemini-Pro" and st.session_state.get('responses_gemini'):
+#             for i, ((timestamp_q, query), (timestamp_r, response)) in enumerate(zip(st.session_state['requests_gemini'], st.session_state['responses_gemini'])):
+#                 message(f"{timestamp_q}\n{query}", is_user=True, key=f"gemini_{i}_user")
+#                 copy_button = st.button(f"📋", key=f"copy_response_gemini_{i}")
+#                 if reference_ips: st.write(f"Reading context from these movies: {reference_ips}")
+#                 if copy_button:
+#                     # pyperclip.copy(response)
+#                     clipboard.copy(response)
+#                     st.success("Response copied to clipboard!")
+#                 message(f"{timestamp_r}\n{response}", key=f"gemini_{i}")
+#         elif selected_model == "ChatGPT 4o" and st.session_state.get('responses_chatgpt'):
+#             for i, ((timestamp_q, query), (timestamp_r, response)) in enumerate(zip(st.session_state['requests_chatgpt'], st.session_state['responses_chatgpt'])):
+#                 message(f"{timestamp_q}\n{query}", is_user=True, key=f"chatgpt_{i}_user")
+#                 copy_button = st.button(f"📋", key=f"copy_response_chatgpt_{i}")
+#                 if reference_ips: st.write(f"Reading context from these movies: {reference_ips}")
+#                 if copy_button:
+#                     # pyperclip.copy(response)
+#                     clipboard.copy(response)
+#                     st.success("Response copied to clipboard!")
+#                 message(f"{timestamp_r}\n{response}", key=f"chatgpt_{i}")
 
-        # Response display section
+# if __name__ == "__main__":
+#     main()
+       # Response display section
         if selected_model == "Gemini-Pro" and st.session_state.get('responses_gemini'):
             for i, ((timestamp_q, query), (timestamp_r, response)) in enumerate(zip(st.session_state['requests_gemini'], st.session_state['responses_gemini'])):
                 message(f"{timestamp_q}\n{query}", is_user=True, key=f"gemini_{i}_user")
