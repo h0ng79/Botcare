@@ -194,7 +194,7 @@ def main():
                     chat_history_filename = st.session_state.get("chat_history_filename", "chat_history_chatgpt.txt")
                     pipeline.save_chat_history(st.session_state['chat_history_chatgpt'], folder_name, chat_history_filename)
     
-        # Response display section
+         # Response display section
         if selected_model == "Gemini-Pro" and st.session_state.get('responses_gemini'):
             for i, ((timestamp_q, query), (timestamp_r, response)) in enumerate(zip(st.session_state['requests_gemini'], st.session_state['responses_gemini'])):
                 message(f"{timestamp_q}\n{query}", is_user=True, key=f"gemini_{i}_user")
