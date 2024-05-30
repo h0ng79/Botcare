@@ -12,3 +12,4 @@ langchain-community
 FlagEmbedding
 pyperclip
 streamlit_extras
+clipboard
