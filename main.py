@@ -3,6 +3,7 @@ import streamlit as st
 from utils import *
 from streamlit_chat import message
 import pyperclip
+import clipboard
 from utils import Pipeline
 from streamlit_extras.stylable_container import stylable_container
 from datetime import datetime
