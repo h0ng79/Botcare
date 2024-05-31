@@ -1,1 +1,15 @@
-
+langchain-google-genai
+langchain-google-genai
+google-generativeai
+pinecone-client==3.0.1
+langchain_openai
+python-dotenv
+streamlit
+streamlit_chat
+langchain
+sentence_transformers
+langchain-community
+FlagEmbedding
+pyperclip
+streamlit_extras
+clipboard
