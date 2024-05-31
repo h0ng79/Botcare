@@ -202,8 +202,9 @@ def main():
                 copy_button = st.button(f"📋", key=f"copy_response_gemini_{i}")
                 if reference_ips: st.write(f"Reading context from these movies: {reference_ips}")
                 if copy_button:
-                    pyperclip.copy(response)
+                    # pyperclip.copy(response)
                     # clipboard.copy(response)
+                    st.session_state.clipboard_content = response
                     st.success("Response copied to clipboard!")
                 message(f"{timestamp_r}\n{response}", key=f"gemini_{i}")
         elif selected_model == "ChatGPT 4o" and st.session_state.get('responses_chatgpt'):
@@ -212,8 +213,9 @@ def main():
                 copy_button = st.button(f"📋", key=f"copy_response_chatgpt_{i}")
                 if reference_ips: st.write(f"Reading context from these movies: {reference_ips}")
                 if copy_button:
-                    pyperclip.copy(response)
+                    # pyperclip.copy(response)
                     # clipboard.copy(response)
+                    st.session_state.clipboard_content = response
                     st.success("Response copied to clipboard!")
                 message(f"{timestamp_r}\n{response}", key=f"chatgpt_{i}")
 
