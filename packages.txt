@@ -1,1 +1,3 @@
 xclip
+pywin32
+pbcopy pbpaste
