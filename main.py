@@ -201,7 +201,7 @@ def main():
                 message(f"{timestamp_q}\n{query}", is_user=True, key=f"gemini_{i}_user")
                 copy_button = st.button(f"📋", key=f"copy_response_gemini_{i}")
                 if reference_ips: st.write(f"Reading context from these movies: {reference_ips}")
-                st.code(response, language="text")
+                # st.code(response, language="text")
                 if copy_button:
                     pyperclip.copy(response)
                     # clipboard.copy(response)
@@ -213,7 +213,7 @@ def main():
                 message(f"{timestamp_q}\n{query}", is_user=True, key=f"chatgpt_{i}_user")
                 copy_button = st.button(f"📋", key=f"copy_response_chatgpt_{i}")
                 if reference_ips: st.write(f"Reading context from these movies: {reference_ips}")
-                st.code(response, language="text")
+                # st.code(response, language="text")
                 if copy_button:
                     pyperclip.copy(response)
                     # clipboard.copy(response)
