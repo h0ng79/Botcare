@@ -206,7 +206,7 @@ def main():
                 #     pyperclip.copy(response)
                     # clipboard.copy(response)
                     # st.session_state.clipboard_content = response
-                    st.success("Response copied to clipboard!")
+                    # st.success("Response copied to clipboard!")
                 message(f"{timestamp_r}\n{response}", key=f"gemini_{i}")
         elif selected_model == "ChatGPT 4o" and st.session_state.get('responses_chatgpt'):
             for i, ((timestamp_q, query), (timestamp_r, response)) in enumerate(zip(st.session_state['requests_chatgpt'], st.session_state['responses_chatgpt'])):
@@ -218,7 +218,7 @@ def main():
                 #     pyperclip.copy(response)
                     # clipboard.copy(response)
                     # st.session_state.clipboard_content = response
-                    st.success("Response copied to clipboard!")
+                    # st.success("Response copied to clipboard!")
                 message(f"{timestamp_r}\n{response}", key=f"chatgpt_{i}")
 
 if __name__ == "__main__":
