@@ -13,3 +13,6 @@ FlagEmbedding
 pyperclip
 streamlit_extras
 clipboard
+google-cloud-storage
+gcsfs
+st-files-connection
