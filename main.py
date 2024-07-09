@@ -1,17 +1,20 @@
 import os
 import streamlit as st
-from utils import *
-from streamlit_chat import message
-import pyperclip
-import clipboard
 from utils import Pipeline
+from streamlit_chat import message
 from streamlit_extras.stylable_container import stylable_container
 from datetime import datetime
+from google.cloud import storage
+from google.oauth2 import service_account
 
 # Set up the page configuration
 st.set_page_config(page_title="BotGPT", layout="centered")
 
 pipeline = Pipeline()
+# st.write(st.secrets.keys())
+# Load GCS credentials
+credentials = service_account.Credentials.from_service_account_info(st.secrets["connections"])
+# client = storage.Client(credentials=credentials, project=st.secrets["connections"]["project_id"])
 
 def login():
     """Renders the login page and handles authentication."""
@@ -34,11 +37,6 @@ def login():
     with st.container():
         st.markdown('<div class="login-form">', unsafe_allow_html=True)
         
-        # with st.markdown('<div class="login-image">', unsafe_allow_html=True):
-        #     st.image("image.png", width=300)  
-       
-        # st.title("Login",layout="centered")
-        
         username = st.text_input("Username", key="login_username")
         password = st.text_input("Password", type="password", key="login_password")
         
@@ -59,47 +57,68 @@ def logout():
     st.session_state.username = None
     st.experimental_rerun()
 
-# Function to load chat history from a file
-def load_chat_history(file_path):
-    chat_history = []
-    with open(file_path, 'r', encoding='utf-8') as f:
-        lines = f.read().splitlines()
-    
-    current_role = None
-    current_timestamp = None
-    current_content = []
-    
-    for line in lines:
-        if line.startswith("user |") or line.startswith("bot |"):
-            if current_role and current_content:
-                chat_history.append((current_role, current_timestamp, "\n".join(current_content)))
-            parts = line.split(' | ', 2)
-            if len(parts) == 3:
-                current_role, current_timestamp, content = parts
-                current_content = [content]
-            else:
-                current_content = [line]
-        else:
-            current_content.append(line)
-    
-    if current_role and current_content:
-        chat_history.append((current_role, current_timestamp, "\n".join(current_content)))
+def get_gcs_client():
+    return storage.Client(credentials=credentials, project=st.secrets["connections"]["project_id"])
 
+def load_chat_history_from_gcs(bucket_name, file_name):
+    client = get_gcs_client()
+    bucket = client.get_bucket(bucket_name)
+    blob = bucket.blob(file_name)
+    chat_history = []
+    if blob.exists():
+        content = blob.download_as_text()
+        lines = content.splitlines()
+        current_role = None
+        current_timestamp = None
+        current_content = []
+
+        for line in lines:
+            if line.startswith("user |") or line.startswith("bot |"):
+                if current_role and current_content:
+                    chat_history.append((current_role, current_timestamp, "\n".join(current_content)))
+                parts = line.split(' | ', 2)
+                if len(parts) == 3:
+                    current_role, current_timestamp, content = parts
+                    current_content = [content]
+                else:
+                    current_content = [line]
+            else:
+                current_content.append(line)
+        
+        if current_role and current_content:
+            chat_history.append((current_role, current_timestamp, "\n".join(current_content)))
+    
     return chat_history
 
-# Function to delete chat history file
-def delete_chat_history(file_path):
-    if os.path.exists(file_path):
-        os.remove(file_path)
-        st.success(f"Deleted {file_path}")
+def save_chat_history_to_gcs(chat_history, bucket_name, file_name):
+    client = get_gcs_client()
+    bucket = client.get_bucket(bucket_name)
+    blob = bucket.blob(file_name)
+    content = "\n".join([f"{role} | {timestamp} | {content}" for role, timestamp, content in chat_history])
+    blob.upload_from_string(content)
+
+def delete_chat_history_from_gcs(bucket_name, file_name):
+    client = get_gcs_client()
+    bucket = client.get_bucket(bucket_name)
+    blob = bucket.blob(file_name)
+    if blob.exists():
+        blob.delete()
+        st.success(f"Deleted {file_name}")
+
+def list_chat_history_files_in_gcs(bucket_name, prefix=''):
+    client = get_gcs_client()
+    bucket = client.get_bucket(bucket_name)
+    blobs = bucket.list_blobs(prefix=prefix)
+    return [blob.name for blob in blobs if blob.name.endswith('.txt')]
 
 def main():
     if "authenticated" not in st.session_state:
         st.session_state.authenticated = False
-
     if not st.session_state.authenticated:
         login()
     else:
+        bucket_name = "chatbotgpt1"  # Replace with your GCS bucket name
+
         with st.sidebar:
             st.write(f"Welcome, {st.session_state.username}!")
             if st.button("Logout"):
@@ -132,34 +151,25 @@ def main():
                     st.session_state['requests_chatgpt'] = []
                     st.session_state['responses_chatgpt'] = []
                     st.session_state['chat_history_chatgpt'] = []
-                # Reset loaded chat history
                 st.session_state['loaded_chat_history'] = []
     
-            # New input field for the chat history file name with default value ".txt"
             chat_history_filename = st.text_input("Chat History Filename", value=".txt", placeholder="Enter chat history filename")
             if chat_history_filename:
                 st.session_state["chat_history_filename"] = chat_history_filename
     
-            # Display existing chat history files
             st.write("### Chat History Files")
-            folder_name = st.session_state.get("folder_name", "History")
-            if not os.path.exists(folder_name):
-                os.makedirs(folder_name)
-            chat_files = [f for f in os.listdir(folder_name) if f.endswith('.txt')]
+            chat_files = list_chat_history_files_in_gcs(bucket_name)
             selected_file = st.selectbox("Select a chat history file to load", chat_files)
             
             if selected_file:
-                file_path = os.path.join(folder_name, selected_file)
                 if st.button("Load Chat History"):
-                    chat_history = load_chat_history(file_path)
+                    chat_history = load_chat_history_from_gcs(bucket_name, selected_file)
                     st.session_state["loaded_chat_history"] = chat_history
                 if st.button("Delete Chat History"):
-                    delete_chat_history(file_path)
-                    # Update chat files list after deletion
-                    chat_files = [f for f in os.listdir(folder_name) if f.endswith('.txt')]
+                    delete_chat_history_from_gcs(bucket_name, selected_file)
+                    chat_files = list_chat_history_files_in_gcs(bucket_name)
                     st.experimental_rerun()
 
-        # Display loaded chat history
         if "loaded_chat_history" in st.session_state and st.session_state["loaded_chat_history"]:
             st.write("### Loaded Chat History")
             for i, (role, timestamp, content) in enumerate(st.session_state["loaded_chat_history"]):
@@ -167,10 +177,7 @@ def main():
                 formatted_message = f"{timestamp}\n{content}"
                 message(formatted_message, is_user=is_user, key=f"loaded_{role}_{i}")
     
-    
-        # Store the selected model in session state
         st.session_state["selected_model"] = selected_model
-       # Text input section
         reference_ips = ""
         if query := st.chat_input("Type your question here..."):
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -182,45 +189,27 @@ def main():
                     st.session_state.setdefault('requests_gemini', []).append((timestamp, query))
                     st.session_state.setdefault('responses_gemini', []).append((timestamp, response_text))
                     st.session_state.setdefault('chat_history_gemini', []).append((timestamp, query, response_text))
-                    folder_name = st.session_state.get("folder_name", "History")
                     chat_history_filename = st.session_state.get("chat_history_filename", "chat_history_gemini.txt")
-                    pipeline.save_chat_history(st.session_state['chat_history_gemini'], folder_name, chat_history_filename)
+                    save_chat_history_to_gcs(st.session_state['chat_history_gemini'], bucket_name, chat_history_filename)
                 else:
                     context = pipeline.find_match(query, selected_is_rag)
                     response_text = pipeline.conversation.predict(input=f"Context:\n {context} \n\n Query:\n{query}")
                     st.session_state.setdefault('requests_chatgpt', []).append((timestamp, query))
                     st.session_state.setdefault('responses_chatgpt', []).append((timestamp, response_text))
                     st.session_state.setdefault('chat_history_chatgpt', []).append((timestamp, query, response_text))
-                    folder_name = st.session_state.get("folder_name", "History")
                     chat_history_filename = st.session_state.get("chat_history_filename", "chat_history_chatgpt.txt")
-                    pipeline.save_chat_history(st.session_state['chat_history_chatgpt'], folder_name, chat_history_filename)
+                    save_chat_history_to_gcs(st.session_state['chat_history_chatgpt'], bucket_name, chat_history_filename)
     
-         # Response display section
         if selected_model == "Gemini-Pro" and st.session_state.get('responses_gemini'):
             for i, ((timestamp_q, query), (timestamp_r, response)) in enumerate(zip(st.session_state['requests_gemini'], st.session_state['responses_gemini'])):
                 message(f"{timestamp_q}\n{query}", is_user=True, key=f"gemini_{i}_user")
-                # copy_button = st.button(f"📋", key=f"copy_response_gemini_{i}")
                 if reference_ips: st.write(f"Reading context from these movies: {reference_ips}")
-                # st.code(response, language="text")
-                # if copy_button:
-                #     pyperclip.copy(response)
-                    # clipboard.copy(response)
-                    # st.session_state.clipboard_content = response
-                    # st.success("Response copied to clipboard!")
                 message(f"{timestamp_r}\n{response}", key=f"gemini_{i}")
         elif selected_model == "ChatGPT 4o" and st.session_state.get('responses_chatgpt'):
             for i, ((timestamp_q, query), (timestamp_r, response)) in enumerate(zip(st.session_state['requests_chatgpt'], st.session_state['responses_chatgpt'])):
                 message(f"{timestamp_q}\n{query}", is_user=True, key=f"chatgpt_{i}_user")
-                # copy_button = st.button(f"📋", key=f"copy_response_chatgpt_{i}")
                 if reference_ips: st.write(f"Reading context from these movies: {reference_ips}")
-                # st.code(response, language="text")
-                # if copy_button:
-                #     pyperclip.copy(response)
-                    # clipboard.copy(response)
-                    # st.session_state.clipboard_content = response
-                    # st.success("Response copied to clipboard!")
                 message(f"{timestamp_r}\n{response}", key=f"chatgpt_{i}")
 
 if __name__ == "__main__":
     main()
-
