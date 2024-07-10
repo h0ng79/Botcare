@@ -182,7 +182,7 @@ def main():
 
         if "loaded_chat_history" in st.session_state and st.session_state["loaded_chat_history"]:
             st.write("### Loaded Chat History")
-                chat_history = []
+            chat_history = []
             client = get_gcs_client()
             bucket = client.get_bucket(bucket_name)
             blob = bucket.blob(file_name)
