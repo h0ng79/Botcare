@@ -93,7 +93,7 @@ def load_chat_history_from_gcs(bucket_name, file_name):
     if current_role and current_content:
         chat_history.append((current_role, current_timestamp, "\n".join(current_content)))
 
-return chat_history
+    return chat_history
 
 # Usage example
 # chat_history = load_chat_history_from_gcs('my_bucket', 'chat_history.txt')
