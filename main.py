@@ -11,10 +11,9 @@ from google.oauth2 import service_account
 st.set_page_config(page_title="BotGPT", layout="centered")
 
 pipeline = Pipeline()
-# st.write(st.secrets.keys())
+
 # Load GCS credentials
 credentials = service_account.Credentials.from_service_account_info(st.secrets["connections"])
-# client = storage.Client(credentials=credentials, project=st.secrets["connections"]["project_id"])
 
 def login():
     """Renders the login page and handles authentication."""
@@ -62,9 +61,9 @@ def get_gcs_client():
 
 def load_chat_history_from_gcs(bucket_name, file_name):
     chat_history = []
-    client = storage.Client()
+    client = get_gcs_client()
     bucket = client.get_bucket(bucket_name)
-    blob = bucket.blob(file_path)
+    blob = bucket.blob(file_name)
     content = blob.download_as_string().decode('utf-8')
     
     lines = content.splitlines()
@@ -94,10 +93,6 @@ def load_chat_history_from_gcs(bucket_name, file_name):
         chat_history.append((current_role, current_timestamp, "\n".join(current_content)))
 
     return chat_history
-
-# Usage example
-# chat_history = load_chat_history_from_gcs('my_bucket', 'chat_history.txt')
-
 
 def save_chat_history_to_gcs(chat_history, bucket_name, file_name):
     client = get_gcs_client()
