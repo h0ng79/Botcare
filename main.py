@@ -61,10 +61,11 @@ def get_gcs_client():
     return storage.Client(credentials=credentials, project=st.secrets["connections"]["project_id"])
 
 def load_chat_history_from_gcs(bucket_name, file_name):
-    client = get_gcs_client()
+    client = get_gcs_client()  # Ensure get_gcs_client() returns a valid GCS client
     bucket = client.get_bucket(bucket_name)
     blob = bucket.blob(file_name)
     chat_history = []
+
     if blob.exists():
         content = blob.download_as_text()
         lines = content.splitlines()
@@ -74,8 +75,11 @@ def load_chat_history_from_gcs(bucket_name, file_name):
 
         for line in lines:
             if line.startswith("user |") or line.startswith("bot |"):
+                # Append the previous message if any
                 if current_role and current_content:
                     chat_history.append((current_role, current_timestamp, "\n".join(current_content)))
+                
+                # Split line into role, timestamp, and content
                 parts = line.split(' | ', 2)
                 if len(parts) == 3:
                     current_role, current_timestamp, content = parts
@@ -85,10 +89,15 @@ def load_chat_history_from_gcs(bucket_name, file_name):
             else:
                 current_content.append(line)
         
+        # Append the last message
         if current_role and current_content:
             chat_history.append((current_role, current_timestamp, "\n".join(current_content)))
     
     return chat_history
+
+# Usage example
+# chat_history = load_chat_history_from_gcs('my_bucket', 'chat_history.txt')
+
 
 def save_chat_history_to_gcs(chat_history, bucket_name, file_name):
     client = get_gcs_client()
