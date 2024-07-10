@@ -104,7 +104,7 @@ def save_chat_history_to_gcs(chat_history, bucket_name, file_name):
     bucket = client.get_bucket(bucket_name)
     blob = bucket.blob(file_name)
     content = "\n".join([f"{role} | {timestamp} | {content}" for role, timestamp, content in chat_history])
-    st.write(f"Saving content to GCS: {content}")  # Debugging line
+    # st.write(f"Saving content to GCS: {content}")  # Debugging line
     blob.upload_from_string(content)
 
 def delete_chat_history_from_gcs(bucket_name, file_name):
