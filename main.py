@@ -1,4 +1,3 @@
-import os
 import streamlit as st
 from utils import Pipeline
 from streamlit_chat import message
@@ -64,9 +63,13 @@ def load_chat_history_from_gcs(bucket_name, file_name):
     client = get_gcs_client()
     bucket = client.get_bucket(bucket_name)
     blob = bucket.blob(file_name)
+    
+    if not blob.exists():
+        st.error(f"The file {file_name} does not exist in the bucket {bucket_name}.")
+        return chat_history
+
     content = blob.download_as_string().decode('utf-8')
-    # with open(bucket.blob(file_name), 'r', encoding='utf-8') as f:
-    #     lines = f.read().splitlines()
+    st.write(f"Loaded content from GCS: {content}")  # Debugging line
     
     lines = content.splitlines()
     
@@ -101,6 +104,7 @@ def save_chat_history_to_gcs(chat_history, bucket_name, file_name):
     bucket = client.get_bucket(bucket_name)
     blob = bucket.blob(file_name)
     content = "\n".join([f"{role} | {timestamp} | {content}" for role, timestamp, content in chat_history])
+    st.write(f"Saving content to GCS: {content}")  # Debugging line
     blob.upload_from_string(content)
 
 def delete_chat_history_from_gcs(bucket_name, file_name):
