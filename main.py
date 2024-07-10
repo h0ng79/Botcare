@@ -58,7 +58,7 @@ def logout():
 def get_gcs_client():
     return storage.Client(credentials=credentials, project=st.secrets["connections"]["project_id"])
 
-def load_chat_history_from_gcs(bucket_name, file_name):
+def load_chat_history(bucket_name, file_name):
     chat_history = []
     client = get_gcs_client()
     bucket = client.get_bucket(bucket_name)
@@ -69,7 +69,7 @@ def load_chat_history_from_gcs(bucket_name, file_name):
         return chat_history
 
     content = blob.download_as_string().decode('utf-8')
-    st.write(f"Loaded content from GCS: {content}")  # Debugging line
+    # st.write(f"Loaded content from GCS: {content}")  # Debugging line
     
     lines = content.splitlines()
     
@@ -173,7 +173,7 @@ def main():
             
             if selected_file:
                 if st.button("Load Chat History"):
-                    chat_history = load_chat_history_from_gcs(bucket_name, selected_file)
+                    chat_history = load_chat_history(bucket_name, selected_file)
                     st.session_state["loaded_chat_history"] = chat_history
                 if st.button("Delete Chat History"):
                     delete_chat_history_from_gcs(bucket_name, selected_file)
@@ -182,10 +182,11 @@ def main():
 
         if "loaded_chat_history" in st.session_state and st.session_state["loaded_chat_history"]:
             st.write("### Loaded Chat History")
-            for i, (role, timestamp, content) in enumerate(st.session_state["loaded_chat_history"]):
-                is_user = role == "user"
-                formatted_message = f"{timestamp}\n{content}"
-                message(formatted_message, is_user=is_user, key=f"loaded_{role}_{i}")
+              st.write(f"Loaded content from GCS: {content}") 
+            # for i, (role, timestamp, content) in enumerate(st.session_state["loaded_chat_history"]):
+            #     is_user = role == "user"
+            #     formatted_message = f"{timestamp}\n{content}"
+            #     message(formatted_message, is_user=is_user, key=f"loaded_{role}_{i}")
     
         st.session_state["selected_model"] = selected_model
         reference_ips = ""
