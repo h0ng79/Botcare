@@ -182,21 +182,10 @@ def main():
 
         if "loaded_chat_history" in st.session_state and st.session_state["loaded_chat_history"]:
             st.write("### Loaded Chat History")
-            chat_history = []
-            client = get_gcs_client()
-            bucket = client.get_bucket(bucket_name)
-            blob = bucket.blob(file_name)
-            
-            if not blob.exists():
-                st.error(f"The file {file_name} does not exist in the bucket {bucket_name}.")
-                return chat_history
-        
-            content = blob.download_as_string().decode('utf-8')
-            st.write(f"Loaded content from GCS: {content}")  # Debugging line
-            # for i, (role, timestamp, content) in enumerate(st.session_state["loaded_chat_history"]):
-            #     is_user = role == "user"
-            #     formatted_message = f"{timestamp}\n{content}"
-            #     message(formatted_message, is_user=is_user, key=f"loaded_{role}_{i}")
+            for i, (role, timestamp, content) in enumerate(st.session_state["loaded_chat_history"]):
+                is_user = role == "user"
+                formatted_message = f"{timestamp}\n{content}"
+                message(formatted_message, is_user=is_user, key=f"loaded_{role}_{i}")
     
         st.session_state["selected_model"] = selected_model
         reference_ips = ""
