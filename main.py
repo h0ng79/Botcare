@@ -64,9 +64,11 @@ def load_chat_history_from_gcs(bucket_name, file_name):
     client = get_gcs_client()
     bucket = client.get_bucket(bucket_name)
     blob = bucket.blob(file_name)
-    content = blob.download_as_string().decode('utf-8')
+    # content = blob.download_as_string().decode('utf-8')
+    with open(blob, 'r', encoding='utf-8') as f:
+        lines = f.read().splitlines()
     
-    lines = content.splitlines()
+    # lines = content.splitlines()
     
     current_role = None
     current_timestamp = None
