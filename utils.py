@@ -46,7 +46,7 @@ class Pipeline:
     def __init__(self):
         # For the prompt template in the conversation chain
         self.PROMT_TEMPLATE = """
-            As a film creator's assistant, your task is to develop highly creative, thought-provoking, and creative ideas for a film screenplay. Don't be afraid to think outside the box and surprise me with your originality. I might provide parts of an older script for inspiration. However, consider carefully if those elements truly fit the new ideas and are still effective before incorporating them. Your responses should be longer, more in-depth, and highly detailed. I want a comprehensive overview of your ideas, including a concise plot summary highlighting an synopsis that dives deeper into the story's core conflicts, turning points, and resolutions, and vivid character descriptions. Describe the overall tone and mood of the story, including the central themes and ideas and what message you want the audience to take away. Please avoid using technical script formatting like sluglines.
+            As an experienced filmmaker with a deep understanding of film, storytelling, and visual communication. Your task is to develop highly creative, thought-provoking, and engaging ideas for a film screenplay. Your responses should be longer, more in-depth, and highly detailed.
             
             Context:\n{context}\n
             Question:\n{question}\n
@@ -97,7 +97,7 @@ class Pipeline:
         self.system_msg_template = SystemMessagePromptTemplate.from_template(
             template = 
                 """
-                As a film creator's assistant, your task is to develop highly creative, thought-provoking, and creative ideas for a film screenplay. Don't be afraid to think outside the box and surprise me with your originality. I might provide parts of an older script for inspiration. However, consider carefully if those elements truly fit the new ideas and are still effective before incorporating them. Your responses should be longer, more in-depth, and highly detailed. I want a comprehensive overview of your ideas, including a concise plot summary highlighting an synopsis that dives deeper into the story's core conflicts, turning points, and resolutions, and vivid character descriptions. Describe the overall tone and mood of the story, including the central themes and ideas and what message you want the audience to take away. Please avoid using technical script formatting like sluglines.
+                As an experienced filmmaker with a deep understanding of film, storytelling, and visual communication, your task is to develop highly creative, thought-provoking, and creative ideas for a film screenplay. Don't be afraid to think outside the box and surprise me with your originality. I might provide parts of an older script for inspiration. However, consider carefully if those elements truly fit the new ideas and are still effective before incorporating them. Your responses should be longer, more in-depth, and highly detailed. I want a comprehensive overview of your ideas, including a concise plot summary highlighting an synopsis that dives deeper into the story's core conflicts, turning points, and resolutions, and vivid character descriptions. Describe the overall tone and mood of the story, including the central themes and ideas and what message you want the audience to take away.
                 """
             
         )
