@@ -44,6 +44,7 @@ def login():
                 st.session_state.authenticated = True
                 st.session_state.username = username
                 # st.experimental_rerun()  # Force rerun after successful login
+                st.rerun()
             else:
                 st.error("Invalid username or password")
 
@@ -53,7 +54,8 @@ def logout():
     """Handles the logout process."""
     st.session_state.authenticated = False
     st.session_state.username = None
-    st.experimental_rerun()
+    # st.experimental_rerun()
+    st.rerun()
 
 def get_gcs_client():
     return storage.Client(credentials=credentials, project=st.secrets["connections"]["project_id"])
