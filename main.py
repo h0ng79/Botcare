@@ -43,7 +43,7 @@ def login():
             if credentials.get(username) == password:
                 st.session_state.authenticated = True
                 st.session_state.username = username
-                st.experimental_rerun()  # Force rerun after successful login
+                # st.experimental_rerun()  # Force rerun after successful login
             else:
                 st.error("Invalid username or password")
 
