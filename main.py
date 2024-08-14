@@ -42,10 +42,15 @@ def login():
             credentials = st.secrets.get("CREDENTIALS", {})
             if credentials.get(username) == password:
                 st.session_state.authenticated = True
-                st.session_state.username = username
-                # st.experimental_rerun()  # Force rerun after successful login
+            #     st.session_state.username = username
+            #     # st.experimental_rerun()  # Force rerun after successful login
+            #     st.rerun()
+            # else:
+            #     st.error("Invalid username or password")
+                st.session_state.login_attempted = False
                 st.rerun()
             else:
+                st.session_state.login_attempted = True
                 st.error("Invalid username or password")
 
         st.markdown('</div>', unsafe_allow_html=True)
