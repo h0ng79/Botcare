@@ -76,7 +76,7 @@ def load_chat_history(bucket_name, file_name):
         return chat_history
 
     content = blob.download_as_string().decode('utf-8')
-    st.write(f"Loaded content from GCS 123: {content}")  # Debugging line
+    st.write(f"Loaded content from GCS: {content}")  # Debugging line
     
     lines = content.splitlines()
     
@@ -180,8 +180,9 @@ def main():
             
             if selected_file:
                 if st.button("Load Chat History"):
-                    chat_history = load_chat_history(bucket_name, selected_file)
-                    st.session_state["loaded_chat_history"] = chat_history
+                    message("hello", is_user=True, key="test")
+                    # chat_history = load_chat_history(bucket_name, selected_file)
+                    # st.session_state["loaded_chat_history"] = chat_history
                 if st.button("Delete Chat History"):
                     delete_chat_history_from_gcs(bucket_name, selected_file)
                     chat_files = list_chat_history_files_in_gcs(bucket_name)
