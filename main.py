@@ -76,7 +76,7 @@ def load_chat_history(bucket_name, file_name):
         return chat_history
 
     content = blob.download_as_string().decode('utf-8')
-    st.write(f"Loaded content from GCS: {content}")  # Debugging line
+    st.write(f"Loaded content from GCS*: {content}")  # Debugging line
     
     lines = content.splitlines()
     
@@ -101,7 +101,6 @@ def load_chat_history(bucket_name, file_name):
             current_content.append(line)
     
     # Append the last message
-    st.write("Role: " + current_role + ", content: " + current_content)
     if current_role and current_content:
         chat_history.append((current_role, current_timestamp, "\n".join(current_content)))
 
@@ -111,7 +110,10 @@ def save_chat_history_to_gcs(chat_history, bucket_name, file_name):
     client = get_gcs_client()
     bucket = client.get_bucket(bucket_name)
     blob = bucket.blob(file_name)
-    content = "\n".join([f"{role} | {timestamp} | {content}" for role, timestamp, content in chat_history])
+    content = ""
+    for role, timestamp, query, content in chat_history:
+        content += f"user | {timestamp} | {query}\n"
+        content += f"bot | {timestamp} | {content}\n"
     # st.write(f"Saving content to GCS: {content}")  # Debugging line
     blob.upload_from_string(content)
 
@@ -188,14 +190,13 @@ def main():
                     chat_files = list_chat_history_files_in_gcs(bucket_name)
                     st.experimental_rerun()
 
-
-        message("Content: " + str(st.session_state), is_user=True, key="test")
         if "loaded_chat_history" in st.session_state and st.session_state["loaded_chat_history"]:
             st.write("### Loaded Chat History")
             for i, (role, timestamp, content) in enumerate(st.session_state["loaded_chat_history"]):
                 is_user = role == "user"
                 formatted_message = f"{timestamp}\n{content}"
                 message(formatted_message, is_user=is_user, key=f"loaded_{role}_{i}")
+            st.experimental_rerun()
     
         st.session_state["selected_model"] = selected_model
         reference_ips = ""
