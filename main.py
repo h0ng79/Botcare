@@ -76,7 +76,7 @@ def load_chat_history(bucket_name, file_name):
         return chat_history
 
     content = blob.download_as_string().decode('utf-8')
-    st.write(f"Loaded content from GCS***123: {content}")  # Debugging line
+    st.write(f"Loaded content from GCS 123: {content}")  # Debugging line
     
     lines = content.splitlines()
     
