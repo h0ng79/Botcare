@@ -180,14 +180,15 @@ def main():
             
             if selected_file:
                 if st.button("Load Chat History"):
-                    message("hello", is_user=True, key="test")
-                    # chat_history = load_chat_history(bucket_name, selected_file)
-                    # st.session_state["loaded_chat_history"] = chat_history
+                    chat_history = load_chat_history(bucket_name, selected_file)
+                    st.session_state["loaded_chat_history"] = chat_history
                 if st.button("Delete Chat History"):
                     delete_chat_history_from_gcs(bucket_name, selected_file)
                     chat_files = list_chat_history_files_in_gcs(bucket_name)
                     st.experimental_rerun()
 
+
+        message("Content: " + str(st.session_state), is_user=True, key="test")
         if "loaded_chat_history" in st.session_state and st.session_state["loaded_chat_history"]:
             st.write("### Loaded Chat History")
             for i, (role, timestamp, content) in enumerate(st.session_state["loaded_chat_history"]):
