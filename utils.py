@@ -13,7 +13,7 @@ from langchain_community.vectorstores import Pinecone as CommunityPinecone
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain.chains import RetrievalQA
 from pinecone import Pinecone
-from FlagEmbedding import FlagModel
+# from FlagEmbedding import FlagModel
 
 from langchain_community.chat_models import ChatOpenAI
 
