@@ -70,6 +70,8 @@ def load_chat_history(bucket_name, file_name):
     client = get_gcs_client()
     bucket = client.get_bucket(bucket_name)
     blob = bucket.blob(file_name)
+
+    st.error("Test error")
     
     if not blob.exists():
         st.error(f"The file {file_name} does not exist in the bucket {bucket_name}.")
