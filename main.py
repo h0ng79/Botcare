@@ -137,7 +137,7 @@ def main():
         bucket_name = "chatbotgpt1"  # Replace with your GCS bucket name
 
         with st.sidebar:
-            st.write(f"Welcome, {st.session_state.username}!")
+            # st.write(f"Welcome, {st.session_state.username}!")
             if st.button("Logout"):
                 logout()
             st.write("### Select Model")
