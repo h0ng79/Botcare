@@ -70,8 +70,6 @@ def load_chat_history(bucket_name, file_name):
     client = get_gcs_client()
     bucket = client.get_bucket(bucket_name)
     blob = bucket.blob(file_name)
-
-    st.error("Test error")
     
     if not blob.exists():
         st.error(f"The file {file_name} does not exist in the bucket {bucket_name}.")
@@ -103,6 +101,7 @@ def load_chat_history(bucket_name, file_name):
             current_content.append(line)
     
     # Append the last message
+    st.write("Role: " + current_role + ", content: " + current_content)
     if current_role and current_content:
         chat_history.append((current_role, current_timestamp, "\n".join(current_content)))
 
