@@ -76,7 +76,7 @@ def load_chat_history(bucket_name, file_name):
         return chat_history
 
     content = blob.download_as_string().decode('utf-8')
-    st.write(f"Loaded content from GCS*: {content}")  # Debugging line
+
     
     lines = content.splitlines()
     
@@ -196,7 +196,6 @@ def main():
                 is_user = role == "user"
                 formatted_message = f"{timestamp}\n{content}"
                 message(formatted_message, is_user=is_user, key=f"loaded_{role}_{i}")
-            st.experimental_rerun()
     
         st.session_state["selected_model"] = selected_model
         reference_ips = ""
