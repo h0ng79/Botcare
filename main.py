@@ -111,7 +111,7 @@ def save_chat_history_to_gcs(chat_history, bucket_name, file_name):
     bucket = client.get_bucket(bucket_name)
     blob = bucket.blob(file_name)
     content = ""
-    for role, timestamp, query, content in chat_history:
+    for timestamp, query, content in chat_history:
         content += f"user | {timestamp} | {query}\n"
         content += f"bot | {timestamp} | {content}\n"
     # st.write(f"Saving content to GCS: {content}")  # Debugging line
@@ -173,8 +173,8 @@ def main():
                     st.session_state['chat_history_chatgpt'] = []
                 st.session_state['loaded_chat_history'] = []
     
-            chat_history_filename = st.text_input("Chat History Filename", value=".txt", placeholder="Enter chat history filename")
-            if chat_history_filename:
+            chat_history_filename = st.text_input("Chat History Filename", value="", placeholder="Enter chat history filename") + ".txt"
+            if chat_history_filename != ".txt":
                 st.session_state["chat_history_filename"] = chat_history_filename
     
             st.write("### Chat History Files")
