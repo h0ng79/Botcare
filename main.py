@@ -216,7 +216,10 @@ def main():
                     response_text = pipeline.conversation.predict(input=f"Context:\n {context} \n\n Query:\n{query}")
                     st.session_state.setdefault('requests_chatgpt', []).append((timestamp, query))
                     st.session_state.setdefault('responses_chatgpt', []).append((timestamp, response_text))
-                    st.session_state.setdefault('chat_history_chatgpt', []).append((timestamp, query, response_text))
+                    if 'chat_history_chatgpt' not in st.session_state:
+                        st.session_state['chat_history_chatgpt'] = []
+                    st.session_state['chat_history_chatgpt'].append((timestamp, query, response_text))
+                    # st.session_state.setdefault('chat_history_chatgpt', []).append((timestamp, query, response_text))
                     chat_history_filename = st.session_state.get("chat_history_filename", "chat_history_chatgpt.txt")
                     save_chat_history_to_gcs(st.session_state['chat_history_chatgpt'], bucket_name, chat_history_filename)
     
