@@ -110,12 +110,12 @@ def save_chat_history_to_gcs(chat_history, bucket_name, file_name):
     client = get_gcs_client()
     bucket = client.get_bucket(bucket_name)
     blob = bucket.blob(file_name)
-    content = ""
+    log_content = ""
     for timestamp, query, content in chat_history:
-        content += f"user | {timestamp} | {query}\n"
-        content += f"bot | {timestamp} | {content}\n"
+        log_content += f"user | {timestamp} | {query}\n"
+        log_content += f"bot | {timestamp} | {content}\n"
     # st.write(f"Saving content to GCS: {content}")  # Debugging line
-    blob.upload_from_string(content)
+    blob.upload_from_string(log_content)
 
 def delete_chat_history_from_gcs(bucket_name, file_name):
     client = get_gcs_client()
