@@ -188,7 +188,7 @@ def main():
                 if st.button("Delete Chat History"):
                     delete_chat_history_from_gcs(bucket_name, selected_file)
                     chat_files = list_chat_history_files_in_gcs(bucket_name)
-                    st.experimental_rerun()
+                    st.rerun()
 
         if "loaded_chat_history" in st.session_state and st.session_state["loaded_chat_history"]:
             st.write("### Loaded Chat History")
