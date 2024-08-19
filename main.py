@@ -208,7 +208,10 @@ def main():
                     response_text = response['output_text'] if isinstance(response, dict) and 'output_text' in response else str(response)
                     st.session_state.setdefault('requests_gemini', []).append((timestamp, query))
                     st.session_state.setdefault('responses_gemini', []).append((timestamp, response_text))
-                    st.session_state.setdefault('chat_history_gemini', []).append((timestamp, query, response_text))
+                    if 'chat_history_chatgpt' not in st.session_state:
+                        st.session_state['chat_history_gemini'] = []
+                    st.session_state['chat_history_gemini'].append((timestamp, query, response_text)) 
+                    # st.session_state.setdefault('chat_history_gemini', []).append((timestamp, query, response_text))
                     chat_history_filename = st.session_state.get("chat_history_filename", "chat_history_gemini.txt")
                     save_chat_history_to_gcs(st.session_state['chat_history_gemini'], bucket_name, chat_history_filename)
                 else:
